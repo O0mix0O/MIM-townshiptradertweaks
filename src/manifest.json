@@ -1,0 +1,4 @@
+{
+    "namespace": "townshiptradertweaks",
+    "setup": "setup.mjs"
+  }

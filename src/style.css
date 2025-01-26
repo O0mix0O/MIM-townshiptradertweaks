@@ -1,0 +1,25 @@
+#convert-resource-jump-to {
+    justify-content: center;
+}
+
+#DIV_CONVERT_RESOURCES>div>div:nth-child(1)>div>div:nth-child(1) {
+    display: none;
+}
+
+.convert-from-township {
+    justify-content: center;
+}
+
+township-conversion {
+    width: 100%;
+}
+
+township-conversion>li>a {
+    width: 100% !important;
+}
+
+@media screen and (max-width: 990px) {
+    #DIV_CONVERT_RESOURCES>div>div:nth-child(1) {
+        top: 16vh !important;
+    }
+}
