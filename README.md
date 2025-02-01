@@ -8,3 +8,5 @@ This mod adds click functionality to all items within the "Shop Tab" in the Melv
 
 - **Hides Menu on Category Click**: Every item in the "Shop Tab" will hide the menu when clicked by simulating a click on the toggle button.
 - **"Show All" Category**: The "Show All" category will trigger both its own specific function (`shopMenu.showAllTabsButRaid()`) and the toggle button click to hide the menu.
+
+.
