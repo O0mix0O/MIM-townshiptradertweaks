@@ -1,12 +1,14 @@
 {
   "name": "townshiptradertweaks",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": true,
   "dependencies": {
     "archiver": "^7.0.1"
   },
   "scripts": {
-    "build": "node build.js"
+    "build": "node scripts/build.js",
+    "clean": "node scripts/cleanDist.js",
+    "publish": "npm run clean && node scripts/publish.js"
   },
   "eslintConfig": {
     "extends": [

@@ -14,11 +14,9 @@ export function setup({ loadStylesheet }) {
     function checkElements() {
       const elements = document.querySelectorAll(selector);
       if (elements.length > 0) {
-        console.log('Elements found!');
         initializeTooltipLogicForAll();
         observer.disconnect(); // Stop the MutationObserver once elements are found
       } else {
-        console.log('Elements not found, retrying...');
       }
     }
 
@@ -35,7 +33,6 @@ export function setup({ loadStylesheet }) {
     function initializeTooltipLogic(element) {
       const tippyInstance = element?._tippy;
       if (!tippyInstance) {
-        console.error('Tippy instance not found!');
         return;
       }
 
@@ -47,7 +44,6 @@ export function setup({ loadStylesheet }) {
           if (mutation.type === 'childList') {
             mutation.addedNodes.forEach((node) => {
               if (node.id && node.id.startsWith('tippy-')) {
-                console.log('New Tooltip Element Added:', node);
                 tooltipElements.push(node); // Store the tooltip elements
               }
             });
@@ -62,27 +58,21 @@ export function setup({ loadStylesheet }) {
           tooltipElements.forEach((tooltipElement) => {
             tooltipElement.style.display = 'block';
           });
-          console.log('Mouseenter without click. Showing tooltip.');
         } else {
-          console.log('Mouseenter during click window. Tooltip suppressed.');
         }
       });
 
       element.addEventListener('click', () => {
-        console.log('Element clicked! Suppressing tooltips...');
         isClicking = true;
         tooltipElements.forEach((tooltipElement) => {
           tooltipElement.style.display = 'none'; // Hide the tooltip after click
         });
-        console.log('Tooltips hidden during click.');
 
         setTimeout(() => {
           isClicking = false;
-          console.log('isClicking reset to false.');
         }, 300); // Delay to allow subsequent mouseenter events
       });
 
-      console.log('Tooltip logic initialized for element.');
     }
 
   })();
