@@ -2,78 +2,73 @@ export function setup({ loadStylesheet }) {
   loadStylesheet('style.css');
 
   (function () {
-    const selector = 'township-conversion > li > a';
-
-    function initializeTooltipLogicForAll() {
-      const elements = document.querySelectorAll(selector);
-      elements.forEach(element => {
-        initializeTooltipLogic(element);
+    function waitForElements(selector, callback) {
+      const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+          mutation.addedNodes.forEach((node) => {
+            if (node.nodeType === 1 && node.matches(selector)) {
+              observer.disconnect();
+              callback();
+            }
+          });
+        });
       });
-    }
 
-    function checkElements() {
+      observer.observe(document.body, { childList: true, subtree: true });
+
+      // Initial check in case the elements are already present
       const elements = document.querySelectorAll(selector);
       if (elements.length > 0) {
-        initializeTooltipLogicForAll();
-        observer.disconnect(); // Stop the MutationObserver once elements are found
-      } else {
+        observer.disconnect();
+        callback();
       }
     }
 
-    const observer = new MutationObserver(() => {
-      checkElements();
+    waitForElements('#CONVERT_RESOURCES_DATA_TO_TOWN > ul > township-conversion > li > a', () => {
+      const elements = document.querySelectorAll('#CONVERT_RESOURCES_DATA_TO_TOWN > ul > township-conversion > li > a');
+
+      elements.forEach(element => {
+        element.addEventListener('click', (event) => {
+          // Ensure the original click event is fired
+          if (typeof element.onclick === 'function') {
+            element.onclick(event);
+          }
+
+          // Your custom function
+          customFunction(event, element);
+        });
+      });
     });
 
-    // Start observing for changes in the document body (or a more specific container)
-    observer.observe(document.body, { childList: true, subtree: true });
+    function customFunction(event, element) {
+      console.log('Custom function executed.');
+      console.log(element); // Ensure the element is being logged
 
-    // Initial check in case the elements are already loaded
-    checkElements();
-
-    function initializeTooltipLogic(element) {
-      const tippyInstance = element?._tippy;
-      if (!tippyInstance) {
-        return;
-      }
-
-      let isClicking = false;
-      let tooltipElements = []; // To store the tooltip elements
-
-      const tooltipObserver = new MutationObserver((mutationsList) => {
-        for (const mutation of mutationsList) {
-          if (mutation.type === 'childList') {
-            mutation.addedNodes.forEach((node) => {
-              if (node.id && node.id.startsWith('tippy-')) {
-                tooltipElements.push(node); // Store the tooltip elements
-              }
-            });
-          }
-        }
-      });
-
-      tooltipObserver.observe(document.body, { childList: true, subtree: true });
-
-      element.addEventListener('mouseenter', () => {
-        if (!isClicking) {
-          tooltipElements.forEach((tooltipElement) => {
-            tooltipElement.style.display = 'block';
-          });
-        } else {
-        }
-      });
-
-      element.addEventListener('click', () => {
-        isClicking = true;
-        tooltipElements.forEach((tooltipElement) => {
-          tooltipElement.style.display = 'none'; // Hide the tooltip after click
+      // Avoid infinite loop by preventing the custom click event from triggering itself
+      if (!event.customClick) {
+        // Create and dispatch a custom MouseEvent
+        const mouseEvent = new MouseEvent('click', {
+          bubbles: true,
+          cancelable: true,
+          view: window
         });
 
-        setTimeout(() => {
-          isClicking = false;
-        }, 300); // Delay to allow subsequent mouseenter events
-      });
+        // Mark this event as a customClick to prevent recursion
+        mouseEvent.customClick = true;
+        element.dispatchEvent(mouseEvent);
 
+        const mouseLeaveEvent = new MouseEvent('mouseleave', {
+          bubbles: true,
+          cancelable: true,
+          view: window
+        });
+        element.dispatchEvent(mouseLeaveEvent);
+      } else {
+        console.log('Custom click event, not firing again to prevent recursion.');
+      }
     }
+
+
 
   })();
 };
